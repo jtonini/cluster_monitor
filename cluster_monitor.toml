@@ -1,0 +1,226 @@
+# Cluster Node Monitor Configuration
+# Configuration file for monitoring spydur and arachne clusters
+
+# ============================================================================
+# Email Notification Settings
+# ============================================================================
+[email]
+enabled = true
+from = "cazuza@badenpowell"
+to = ["your-email@domain.com", "admin@domain.com"]
+cc = []
+smtp_server = "localhost"
+smtp_port = 25
+
+# Send notifications for these severity levels
+notify_on_severity = ["warning", "error", "critical"]
+
+# Minimum time between notifications for same node (minutes)
+notification_cooldown = 30
+
+# ============================================================================
+# Spydur Cluster Configuration
+# ============================================================================
+[spydur]
+enabled = true
+user = "installer"
+head_node = "spydur"
+
+# Node list (auto-detected if not specified)
+# nodes = ["spdr01", "spdr02", ..., "spdr61"]
+
+# SLURM command to check node status
+check_command = 'sinfo -h -N -o "%N %T"'
+
+# Recovery commands (executed in order until one succeeds)
+# Note: installer has NOPASSWD access to systemctl for slurm services
+recovery_commands = [
+    "sudo -u slurm scontrol update nodename={node} state=resume",
+    "ssh {node} 'sudo systemctl restart slurmd'"
+]
+
+# Node states considered problematic
+problem_states = ["down", "drain", "drng", "fail", "failing", "maint", "unk", "unknown"]
+
+# SSH connection timeout (seconds)
+ssh_timeout = 10
+
+# ============================================================================
+# Arachne Cluster Configuration
+# ============================================================================
+[arachne]
+enabled = true
+user = "zeus"
+head_node = "arachne"
+
+# Node list (auto-detected if not specified)
+# nodes = ["node01", "node02", "node03", "node51", "node52", "node53"]
+
+# SLURM command to check node status
+check_command = 'sinfo -h -N -o "%N %T"'
+
+# Recovery commands (executed in order until one succeeds)
+# Note: zeus logs in as root on nodes, no sudo needed for node commands
+recovery_commands = [
+    "sudo scontrol update nodename={node} state=resume",
+    "ssh {node} 'systemctl restart slurmd'"
+]
+
+# Node states considered problematic
+problem_states = ["down", "drain", "drng", "fail", "failing", "maint", "unk", "unknown"]
+
+# SSH connection timeout (seconds)
+ssh_timeout = 10
+
+# ============================================================================
+# Monitoring Settings
+# ============================================================================
+[monitoring]
+# How often to check clusters (in seconds)
+# Note: This is set via cron, this value is for reference
+check_interval = 300  # 5 minutes
+
+# Maximum recovery attempts per incident
+max_recovery_attempts = 3
+
+# Wait time between recovery attempts (seconds)
+recovery_wait_time = 60
+
+# Wait time after recovery command before verifying (seconds)
+verification_wait_time = 10
+
+# Consider node recovered if it stays up for this long (seconds)
+recovery_confirmation_time = 300
+
+# ============================================================================
+# Database Settings
+# ============================================================================
+[database]
+# Database file location (~ expands to home directory)
+path = "~/cluster_monitor.db"
+
+# SQL schema file (optional, will use inline schema if not found)
+schema_file = "~/cluster_monitor/cluster_monitor_schema.sql"
+
+# Automatic cleanup of old records
+auto_cleanup = true
+
+# Keep records for this many days
+retention_days = 90
+
+# Perform cleanup this often (days)
+cleanup_interval_days = 7
+
+# ============================================================================
+# Logging Settings
+# ============================================================================
+[logging]
+# Log file location
+log_file = "~/cluster_monitor.log"
+
+# Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+log_level = "INFO"
+
+# Maximum log file size (MB) before rotation
+max_log_size_mb = 100
+
+# Number of backup log files to keep
+backup_count = 5
+
+# Include timestamps in log
+include_timestamp = true
+
+# Include hostname in log
+include_hostname = true
+
+# ============================================================================
+# Reporting Settings
+# ============================================================================
+[reporting]
+# Enable automatic daily reports
+daily_report_enabled = true
+daily_report_time = "08:00"  # 8 AM
+
+# Enable automatic weekly reports
+weekly_report_enabled = true
+weekly_report_day = "monday"  # Day of week
+weekly_report_time = "08:00"
+
+# Report includes last N days of data
+report_days = 7
+
+# Include these sections in reports
+report_sections = [
+    "cluster_summary",
+    "problem_history",
+    "recovery_stats",
+    "downtime_analysis"
+]
+
+# ============================================================================
+# Advanced Settings
+# ============================================================================
+[advanced]
+# Parallel checking of clusters
+parallel_checks = true
+
+# Maximum concurrent SSH connections
+max_concurrent_ssh = 10
+
+# Retry failed SSH connections
+ssh_retry_count = 2
+
+# Delay between SSH retries (seconds)
+ssh_retry_delay = 5
+
+# Enable debug mode (verbose output)
+debug_mode = false
+
+# Dry run mode (check only, no recovery)
+dry_run = false
+
+# ============================================================================
+# Custom Commands (Optional)
+# ============================================================================
+# You can define custom commands to run before/after monitoring
+
+# [custom_commands]
+# # Run before monitoring starts
+# pre_monitoring = [
+#     "echo 'Starting cluster monitor'",
+# ]
+# 
+# # Run after monitoring completes
+# post_monitoring = [
+#     "echo 'Monitoring complete'",
+# ]
+# 
+# # Run when critical problem detected
+# on_critical = [
+#     "echo 'Critical problem detected' | mail -s 'CRITICAL' admin@domain.com",
+# ]
+
+# ============================================================================
+# Node-Specific Overrides (Optional)
+# ============================================================================
+# Override settings for specific problematic nodes
+
+# [[node_overrides]]
+# cluster = "spydur"
+# node = "spdr05"
+# # Don't attempt automatic recovery on this node
+# skip_recovery = true
+# # Custom recovery commands for this node
+# recovery_commands = [
+#     "scontrol update nodename=spdr05 state=resume",
+# ]
+
+# [[node_overrides]]
+# cluster = "arachne"
+# node = "node51"
+# # This node requires more aggressive recovery
+# recovery_commands = [
+#     "scontrol update nodename=node51 state=resume",
+#     "ssh node51 'sudo systemctl restart slurmd'",
+#     "ssh node51 'sudo reboot'",
+# ]
