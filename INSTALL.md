@@ -36,6 +36,16 @@ If all checks pass, proceed to installation.
 
 ## Installation (5-10 minutes)
 
+### Step 1: Get the Code
+
+**Option A: Clone from Git (Recommended)**
+```bash
+git clone https://github.com/jtonini/cluster_monitor.git
+cd cluster_monitor
+```
+
+**Option B: Manual Installation**
+
 ### Step 1: Create Installation Directory
 ```bash
 # Choose installation location

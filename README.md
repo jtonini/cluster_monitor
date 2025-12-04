@@ -61,6 +61,32 @@ badenpowell (cazuza)
 
 ## Installation
 
+### Option 1: Install from Git (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/jtonini/cluster_monitor.git
+cd cluster_monitor
+
+# 2. Make scripts executable
+chmod +x *.py *.sh
+
+# 3. Run initial setup
+./cluster_node_monitor.py --monitor --no-recovery
+
+# 4. Configure
+vim ~/.config/cluster_monitor/config.toml
+# (update email and cluster settings)
+
+# 5. Install cron
+./setup_cron.sh
+
+# Done! System is now monitoring automatically
+```
+
+### Option 2: Manual Installation
+
+
 ### 1. Clone or Copy Files
 
 On **badenpowell** as user **cazuza**:
