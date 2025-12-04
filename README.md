@@ -244,6 +244,58 @@ resume_node spydur spdr01        # Manually resume a node
 ./query_monitor_db.py --list-nodes
 ```
 
+
+### Queue Analysis
+
+Check for misleading job status messages in SLURM queue:
+
+```bash
+# Check all clusters for misleading statuses
+./check_queue.py
+
+# Check specific cluster
+./check_queue.py --cluster spydur
+
+# Verbose output with resource details
+./check_queue.py --verbose
+
+# Via bash function
+source cluster_monitor_functions.sh
+check_queue
+```
+
+**Detects common scenarios:**
+- Jobs showing "nodes DOWN" when nodes are actually online
+- "DRAINED" message but resources just exhausted (CPUs/GPUs/memory)
+- Resources allocated to higher priority partitions
+- Reports real reason: CPU exhaustion, GPU allocation, memory limits
+
+
+### Queue Analysis
+
+Check for misleading job status messages in SLURM queue:
+
+```bash
+# Check all clusters for misleading statuses
+./check_queue.py
+
+# Check specific cluster
+./check_queue.py --cluster spydur
+
+# Verbose output with resource details
+./check_queue.py --verbose
+
+# Via bash function
+source cluster_monitor_functions.sh
+check_queue
+```
+
+**Detects common scenarios:**
+- Jobs showing "nodes DOWN" when nodes are actually online
+- "DRAINED" message but resources just exhausted (CPUs/GPUs/memory)
+- Resources allocated to higher priority partitions
+- Reports real reason: CPU exhaustion, GPU allocation, memory limits
+
 ## Configuration
 
 ### Main Configuration File

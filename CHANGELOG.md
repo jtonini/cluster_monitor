@@ -1,5 +1,43 @@
 # Changelog
 
+## Version 1.2 - Queue Analysis Feature (December 2024)
+
+### New Features
+- **Job Queue Analyzer**: Detect misleading SLURM job status messages
+  - Identifies jobs showing "nodes DOWN/DRAINED" when nodes are actually available
+  - Reports real reason: CPUs exhausted, GPUs allocated, memory full, etc.
+  - Helps users understand why jobs are really waiting
+- **check_queue.py**: Standalone tool for quick queue analysis
+- **Bash functions**: Added `check_queue` and `check_queue_verbose` commands
+
+### Files Added
+- job_queue_analyzer.py - Core queue analysis engine (372 lines)
+- check_queue.py - Command-line queue checker (118 lines)
+
+### Use Cases
+- Job appears stuck with "nodes DOWN" but nodes are actually online
+- Users confused about why jobs won't start
+- Admins want to identify resource bottlenecks quickly
+- Distinguish between actual node failures and resource exhaustion
+
+### Usage
+```bash
+# Check all clusters
+./check_queue.py
+
+# Check specific cluster
+./check_queue.py --cluster spydur
+
+# Verbose output with details
+./check_queue.py --verbose
+
+# Via bash function
+source cluster_monitor_functions.sh
+check_queue
+```
+
+# Changelog
+
 ## Version 1.1 - Production Ready (December 2024)
 
 ### Bug Fixes

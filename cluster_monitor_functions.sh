@@ -540,3 +540,32 @@ EOF
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     monitor_help
 fi
+
+# ============================================================================
+# Queue Analysis Functions
+# ============================================================================
+
+# Check for misleading job statuses
+# Usage: check_queue [cluster]
+check_queue() {
+    local cluster=$1
+    
+    if [[ -z "$cluster" ]]; then
+        ./check_queue.py
+    else
+        ./check_queue.py --cluster "$cluster"
+    fi
+}
+
+# Check queue with verbose output
+# Usage: check_queue_verbose [cluster]
+check_queue_verbose() {
+    local cluster=$1
+    
+    if [[ -z "$cluster" ]]; then
+        ./check_queue.py --verbose
+    else
+        ./check_queue.py --cluster "$cluster" --verbose
+    fi
+}
+
